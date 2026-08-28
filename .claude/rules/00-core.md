@@ -15,6 +15,9 @@ the project already does, follow the project and say so.
   newer than the declared `require.php`.
 - If a task touches more than three files, or has a fork in the road, propose a
   plan before writing code.
+- If `docs/adr/` exists, read the records relevant to what you are about to
+  change. A decision recorded there was made deliberately; do not reopen it
+  without saying so.
 
 ## Boundaries of a change
 
@@ -26,6 +29,21 @@ the project already does, follow the project and say so.
 - Schema changes go in a new migration or a new script. Migrations that have
   already run are not edited.
 - Do not delete code as "unused" without searching the repository for callers.
+
+## Writing
+
+Applies to everything you produce: documentation, commit messages, and your
+replies in the session.
+
+- Lead with the answer. Context comes after it, and only if it is needed.
+- Plain declarative sentences. Cut hedging, filler, and throat-clearing.
+- No marketing adjectives — robust, seamless, powerful, blazing fast. No
+  "simply", "just", "easily", "obviously": if it were obvious the reader would
+  not be reading.
+- State what you verified and what you did not. Never write a summary that
+  reads as more complete than the work.
+- Compare in a table; reason in prose. Do not put an argument in a table.
+- No emoji unless the user used them first.
 
 ## Commits
 

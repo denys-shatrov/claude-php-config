@@ -59,6 +59,14 @@ fix it**. Without a failure scenario it is an opinion, not a finding.
 - A test that hits the network or depends on the current time.
 - A test that would still pass with the implementation commented out.
 
+## Documentation
+
+- Behaviour changed but the documentation describing it did not.
+- A new required environment variable, command, or setup step that no
+  documentation mentions.
+- A decision with lasting consequences made in this change and not recorded as
+  an ADR.
+
 ## Compatibility
 
 - A changed public method signature or API response shape.

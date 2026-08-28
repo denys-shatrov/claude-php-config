@@ -1,10 +1,9 @@
 ---
 paths:
+  - "artisan"
   - "app/**"
   - "routes/**"
-  - "config/**"
-  - "bootstrap/**"
-  - "artisan"
+  - "bootstrap/app.php"
 ---
 
 # Laravel

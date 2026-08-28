@@ -54,7 +54,14 @@ Split the findings into two groups and show them:
 Check honestly: does every new branch of behaviour have a test? If not, either
 write it or state plainly that the coverage is missing and why.
 
-## 5. Summary
+## 5. Documentation
+
+Did this change alter behaviour a reader relies on — a command, a config key, an
+endpoint, a setup step? If so, the documentation change belongs in this commit,
+not a later one. If a decision with lasting consequences was made, propose an
+ADR via the `/adr` skill.
+
+## 6. Summary
 
 Print it compactly:
 

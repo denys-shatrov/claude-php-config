@@ -1,9 +1,11 @@
 ---
 paths:
   - "app/Models/**"
-  - "database/**"
   - "app/Observers/**"
   - "app/Jobs/**"
+  - "database/migrations/**"
+  - "database/factories/**"
+  - "database/seeders/**"
 ---
 
 # Models, queries, migrations

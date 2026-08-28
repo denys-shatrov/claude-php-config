@@ -29,6 +29,9 @@ Gather facts; do not assume:
   points are and how files are included.
 - `git log --oneline -30` plus the diffstat of the last few commits, to see
   commit style and which areas are active.
+- Documentation: `README.md`, `docs/`, `docs/adr/`, a wiki link in the repo
+  description. Note whether it exists, and spot-check whether it still matches
+  the code — stale documentation is a trap you should warn about.
 
 ## Step 2. Decide the mode
 
@@ -90,6 +93,8 @@ cost. Do not act without approval:
 - No CI → `github-workflow-quality.yml` from `.claude/templates/`.
 - Has a UI → Chrome MCP, so the agent can inspect its own markup and the browser
   console instead of guessing.
+- Undocumented architectural decisions that keep resurfacing → start
+  `docs/adr/` with the `/adr` skill, one record at a time as questions come up.
 
 Finish by naming which `.claude/rules/` are active in this project and which will
 never load because the matching paths do not exist.
