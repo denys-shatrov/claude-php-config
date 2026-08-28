@@ -110,6 +110,21 @@ is worse than no test, because it is trusted.
 ./tests/run.sh
 ```
 
+### Keep the test portable
+
+The suite runs on macOS locally and on Linux in CI, and the two disagree in
+ways that pass silently on one side:
+
+- `mktemp` on Linux honours `TMPDIR`; the BSD version on macOS ignores it. Do
+  not create a temporary directory inside a `TMPDIR` a previous case may have
+  deleted.
+- `sed -i` takes an argument on macOS (`sed -i ''`) and must not have one on
+  Linux. Write to a new file instead of editing in place.
+- `readlink -f`, `date -d`, and GNU-only flags are absent on macOS.
+
+Make the harness fail loudly when a fixture cannot be created. A broken fixture
+otherwise reports the hook under test as faulty, and you debug the wrong file.
+
 ## Record a project decision
 
 Conventions specific to one project do not belong in this shared config. Put

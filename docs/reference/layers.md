@@ -93,8 +93,34 @@ needs `php` on the path for the syntax-check cases and nothing else.
 Exits non-zero if any case fails. The suite is not copied into target projects;
 it tests this repository.
 
+### Continuous integration
+
+`.github/workflows/tests.yml` runs on every push to `main` and every pull
+request. It belongs to this repository only.
+
+| Step | Checks |
+|---|---|
+| Shell syntax | `bash -n` over `install.sh`, `tests/run.sh`, and every hook |
+| Hook tests | `./tests/run.sh` |
+| Installer is idempotent | a second `install.sh` run into the same directory copies nothing |
+
+`.claude/templates/github-workflow-quality.yml` is a different file with a
+different purpose: it is copied into a target project and runs Pint, PHPStan,
+and that project's tests. It does not run the hook suite, because target
+projects do not receive `tests/`.
+
 ## Files the installer writes
 
 `install.sh` copies the whole `.claude/` tree and skips any file that already
 exists. It sets the execute bit on `.claude/hooks/*.sh`. It writes nothing
 outside `.claude/`.
+
+`LICENSE`, `README.md`, `docs/`, and `tests/` stay in this repository and are
+not copied.
+
+## Licence
+
+MIT. You may copy `.claude/` into any project, private or commercial, and
+modify it freely. The only condition is that the copyright notice travels with
+substantial copies of the source. Vendoring the config into your own repository
+is exactly the intended use.
