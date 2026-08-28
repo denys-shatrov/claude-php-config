@@ -55,6 +55,7 @@ Full list: [layers reference](docs/reference/layers.md).
 |---|---|
 | [Layers reference](docs/reference/layers.md) | you need the exact rules, paths, hooks, or exit codes |
 | [Close the feedback loop](docs/how-to/close-the-feedback-loop.md) | the agent guesses instead of verifying |
+| [Share rules across projects](docs/how-to/share-rules-across-projects.md) | you maintain several projects and want one place to fix a rule |
 | [Extend the config](docs/how-to/extend-the-config.md) | you want to add a rule, skill, or hook |
 | [Why it is built this way](docs/explanation/design.md) | you are about to change the structure |
 | [Why these writing standards](docs/explanation/writing-standards.md) | you want the reasoning behind Diátaxis, Google style, and ADRs |

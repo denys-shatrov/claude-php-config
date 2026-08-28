@@ -104,16 +104,34 @@ request. It belongs to this repository only.
 | Hook tests | `./tests/run.sh` |
 | Installer is idempotent | a second `install.sh` run into the same directory copies nothing |
 
+The suite also covers both installer modes: that `--link-rules` produces
+symlinks pointing at this repository, that skills are still copied, that a
+project's own rule and an edited rule are left alone, and that bad arguments
+are rejected.
+
 `.claude/templates/github-workflow-quality.yml` is a different file with a
 different purpose: it is copied into a target project and runs Pint, PHPStan,
 and that project's tests. It does not run the hook suite, because target
 projects do not receive `tests/`.
 
-## Files the installer writes
+## The installer
 
-`install.sh` copies the whole `.claude/` tree and skips any file that already
-exists. It sets the execute bit on `.claude/hooks/*.sh`. It writes nothing
-outside `.claude/`.
+```bash
+./install.sh [--link-rules] /path/to/project
+```
+
+| Mode | Rules | Everything else |
+|---|---|---|
+| default | copied as real files | copied |
+| `--link-rules` | symlinked back to this repository, file by file | copied |
+
+In both modes the installer skips any path that already exists, sets the
+execute bit on `.claude/hooks/*.sh`, and writes nothing outside `.claude/`.
+A real file is never replaced by a symlink, so an edited rule survives.
+
+`--link-rules` links each file individually rather than replacing the whole
+directory, which leaves room for a project to add rules of its own. See
+[share rules across projects](../how-to/share-rules-across-projects.md).
 
 `LICENSE`, `README.md`, `docs/`, and `tests/` stay in this repository and are
 not copied.

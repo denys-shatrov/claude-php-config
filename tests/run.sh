@@ -177,6 +177,74 @@ check "verify: tolerates a deleted file in the list" 0 php-verify.sh '{"stop_hoo
 
 teardown
 
+# --- install.sh ------------------------------------------------------------
+
+echo
+echo "install.sh"
+setup
+T="$WORK/target"; mkdir -p "$T"
+
+run_install() { bash "$ROOT/install.sh" "$@" >/dev/null 2>&1; }
+
+# Never pipe the installer straight into grep: grep -q exits on the first match
+# and the writer dies of SIGPIPE, which pipefail then reports as failure 141.
+# Capture the output, then match against it.
+install_says() {
+  local pattern="$1"; shift
+  local out
+  out=$(bash "$ROOT/install.sh" "$@" 2>/dev/null)
+  printf '%s' "$out" | grep -q "$pattern"
+}
+
+run_install "$T"
+[ -f "$T/.claude/rules/00-core.md" ] && [ ! -L "$T/.claude/rules/00-core.md" ]
+assert "install: default mode copies rules as real files" $?
+
+run_install "$T"
+install_says 'Copied: 0' "$T"
+assert "install: second run copies nothing" $?
+
+rm -rf "$T"; mkdir -p "$T"
+run_install --link-rules "$T"
+[ -L "$T/.claude/rules/00-core.md" ]
+assert "install: --link-rules symlinks rule files" $?
+
+[ -f "$T/.claude/skills/ship/SKILL.md" ] && [ ! -L "$T/.claude/skills/ship/SKILL.md" ]
+assert "install: --link-rules still copies skills" $?
+
+[ "$(readlink "$T/.claude/rules/00-core.md")" = "$ROOT/.claude/rules/00-core.md" ]
+assert "install: the symlink points at this repository" $?
+
+grep -q "Rule of precedence" "$T/.claude/rules/00-core.md"
+assert "install: content is readable through the symlink" $?
+
+install_says 'linked: 0' --link-rules "$T"
+assert "install: --link-rules is idempotent" $?
+
+# A project's own rule must survive a re-run.
+printf -- '---\npaths:\n  - "app/**"\n---\n\n# Local\n' > "$T/.claude/rules/90-project.md"
+run_install --link-rules "$T"
+[ -f "$T/.claude/rules/90-project.md" ] && [ ! -L "$T/.claude/rules/90-project.md" ]
+assert "install: a project's own rule is left alone" $?
+
+# A real file already in place must not be replaced by a link.
+rm -rf "$T"; mkdir -p "$T/.claude/rules"
+printf '# customised\n' > "$T/.claude/rules/00-core.md"
+run_install --link-rules "$T"
+[ ! -L "$T/.claude/rules/00-core.md" ] && grep -q customised "$T/.claude/rules/00-core.md"
+assert "install: an edited rule is never replaced by a link" $?
+
+bash "$ROOT/install.sh" --nonsense "$T" >/dev/null 2>&1 && r=1 || r=0
+assert "install: rejects an unknown option" $r
+
+bash "$ROOT/install.sh" "$T" "$T" >/dev/null 2>&1 && r=1 || r=0
+assert "install: rejects two targets" $r
+
+bash "$ROOT/install.sh" >/dev/null 2>&1 && r=1 || r=0
+assert "install: rejects a missing target" $r
+
+teardown
+
 # --- summary ---------------------------------------------------------------
 
 echo

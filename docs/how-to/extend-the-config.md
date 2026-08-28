@@ -122,6 +122,16 @@ ways that pass silently on one side:
   Linux. Write to a new file instead of editing in place.
 - `readlink -f`, `date -d`, and GNU-only flags are absent on macOS.
 
+Do not pipe a command straight into `grep -q` in an assertion. `grep -q` exits
+on the first match, the writer dies of `SIGPIPE`, and under `set -o pipefail`
+the pipeline reports 141 whether or not the text matched. Capture the output
+first, then match against it:
+
+```bash
+out=$(some-command 2>/dev/null)
+printf '%s' "$out" | grep -q 'expected text'
+```
+
 Make the harness fail loudly when a fixture cannot be created. A broken fixture
 otherwise reports the hook under test as faulty, and you debug the wrong file.
 
