@@ -60,6 +60,14 @@ Full list: [layers reference](docs/reference/layers.md).
 | [Why these writing standards](docs/explanation/writing-standards.md) | you want the reasoning behind Diátaxis, Google style, and ADRs |
 | [Decision records](docs/adr/) | you want to know why something was settled the way it was |
 
+## Tests
+
+The hooks have their own suite, since a broken hook blocks your workflow:
+
+```bash
+./tests/run.sh
+```
+
 ## Requirements
 
 PHP on the path is enough. Pint, PHPStan, Pest, and PHPUnit are used when the

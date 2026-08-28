@@ -1,0 +1,38 @@
+# CI for this repository itself, not for projects that install the config.
+# The quality workflow shipped in .claude/templates/ is the one meant for
+# target projects.
+
+name: Tests
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  hooks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+
+      - name: Shell syntax
+        run: |
+          bash -n install.sh
+          bash -n tests/run.sh
+          for f in .claude/hooks/*.sh; do bash -n "$f"; done
+
+      - name: Hook tests
+        run: ./tests/run.sh
+
+      - name: Installer is idempotent
+        run: |
+          mkdir -p /tmp/target
+          ./install.sh /tmp/target > /dev/null
+          ./install.sh /tmp/target | grep -q 'Copied: 0' \
+            || { echo "second run copied files; it must skip them"; exit 1; }

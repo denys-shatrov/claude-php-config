@@ -94,6 +94,22 @@ echo '{"tool_input":{"file_path":"/tmp/x.php"}}' | bash .claude/hooks/your-hook.
 echo "exit=$?"
 ```
 
+Then add cases to `tests/run.sh` — at minimum the blocking case and the case
+that must pass through untouched:
+
+```bash
+check "your-hook: blocks X" 2 your-hook.sh "$(json_cmd 'the dangerous command')"
+check "your-hook: allows Y" 0 your-hook.sh "$(json_cmd 'the safe command')"
+```
+
+Verify the test would catch a regression: break the hook deliberately, confirm
+the case fails, then restore it. A hook test that passes against a broken hook
+is worse than no test, because it is trusted.
+
+```bash
+./tests/run.sh
+```
+
 ## Record a project decision
 
 Conventions specific to one project do not belong in this shared config. Put

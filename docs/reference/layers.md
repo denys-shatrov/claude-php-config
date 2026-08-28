@@ -80,6 +80,19 @@ Copied into a project by hand; the installer does not place them.
 | `templates/github-workflow-quality.yml` | CI running pint, phpstan, tests |
 | `templates/adr-template.md` | MADR-style decision record |
 
+## Tests
+
+`tests/run.sh` exercises the hooks against sample event payloads. Pure bash; it
+needs `php` on the path for the syntax-check cases and nothing else.
+
+```bash
+./tests/run.sh          # everything
+./tests/run.sh guard    # only cases whose name contains "guard"
+```
+
+Exits non-zero if any case fails. The suite is not copied into target projects;
+it tests this repository.
+
 ## Files the installer writes
 
 `install.sh` copies the whole `.claude/` tree and skips any file that already
