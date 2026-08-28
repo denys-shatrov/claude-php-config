@@ -13,20 +13,33 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 HOOKS="$ROOT/.claude/hooks"
 FILTER="${1:-}"
 
+# Each case overrides TMPDIR so the hooks write their edit list somewhere
+# disposable. Remember the real one: mktemp must not be asked to create a
+# directory inside a TMPDIR that a previous teardown already deleted.
+BASE_TMPDIR="${TMPDIR:-/tmp}"
+
 pass=0; fail=0; skip=0
 failed_names=()
 
 # --- helpers ---------------------------------------------------------------
 
 setup() {
-  WORK=$(mktemp -d)
+  WORK=$(TMPDIR="$BASE_TMPDIR" mktemp -d) || {
+    echo "harness error: mktemp failed" >&2; exit 1; }
+  # A broken fixture would surface as a misleading assertion failure, so stop
+  # the suite instead of reporting a hook as faulty.
+  [ -d "$WORK" ] || { echo "harness error: work dir missing" >&2; exit 1; }
   export TMPDIR="$WORK/tmp"
-  mkdir -p "$TMPDIR"
+  mkdir -p "$TMPDIR" "$WORK/project" || {
+    echo "harness error: cannot create fixtures" >&2; exit 1; }
   export CLAUDE_PROJECT_DIR="$WORK/project"
-  mkdir -p "$CLAUDE_PROJECT_DIR"
 }
 
-teardown() { [ -n "${WORK:-}" ] && rm -rf "$WORK"; }
+teardown() {
+  export TMPDIR="$BASE_TMPDIR"
+  [ -n "${WORK:-}" ] && rm -rf "$WORK"
+  WORK=""
+}
 
 # check <name> <expected-exit> <hook> <json-payload>
 check() {
