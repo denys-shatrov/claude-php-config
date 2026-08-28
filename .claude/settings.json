@@ -1,0 +1,55 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Write|Edit",
+        "hooks": [
+          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/php-guard.sh" }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/php-post-edit.sh" }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/php-verify.sh" }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(php artisan about)",
+      "Bash(php artisan route:list*)",
+      "Bash(php artisan config:show*)",
+      "Bash(php artisan model:show*)",
+      "Bash(php -l *)",
+      "Bash(php -v)",
+      "Bash(composer show*)",
+      "Bash(composer why*)",
+      "Bash(vendor/bin/pint --test*)",
+      "Bash(vendor/bin/phpstan*)",
+      "Bash(vendor/bin/pest*)",
+      "Bash(vendor/bin/phpunit*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git status*)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./storage/*.sqlite)",
+      "Read(./**/*.pem)",
+      "Read(./**/*.key)",
+      "Edit(./.env)",
+      "Edit(./.env.*)"
+    ]
+  }
+}

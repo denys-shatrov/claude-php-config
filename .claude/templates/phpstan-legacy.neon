@@ -1,0 +1,26 @@
+# For a legacy project: turn analysis on without drowning in existing errors.
+#
+# 1. composer require --dev phpstan/phpstan
+# 2. vendor/bin/phpstan analyse --generate-baseline
+#    The baseline records today's errors as "known", so new code is checked
+#    strictly while old code stays out of the way.
+# 3. Regenerate the baseline periodically: it should only ever shrink.
+
+parameters:
+    level: 1          # start here. Raise one step once the baseline stops growing.
+
+    paths:
+        - .
+
+    excludePaths:
+        - vendor
+        - node_modules
+        - storage
+        - cache
+        - public/uploads
+
+    baseline: phpstan-baseline.neon
+
+    # Legacy code often uses dynamics the analyser cannot follow.
+    # Add targeted exclusions here rather than lowering the level overall.
+    ignoreErrors: []

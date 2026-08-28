@@ -1,0 +1,26 @@
+# Strict analysis for a Laravel project.
+# Install: composer require --dev phpstan/phpstan larastan/larastan
+# Run:     vendor/bin/phpstan analyse
+#
+# Level 5 is a workable starting point for an existing project.
+# Raise it one step at a time to 8-9, fixing what it finds. 10 is the maximum.
+
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 5
+
+    paths:
+        - app
+        - database
+        - routes
+        - tests
+
+    # Speeds up repeat runs.
+    tmpDir: build/phpstan
+
+    checkMissingIterableValueType: false
+
+    # Level 8+ requires array and collection element types in docblocks.
+    # That is worth doing, but enable it when you are ready to write them.
